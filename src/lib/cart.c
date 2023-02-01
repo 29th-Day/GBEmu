@@ -186,7 +186,9 @@ const int cart_mapper() {
         case 0x20:
             return 6;
         case 0x22:
-            7;
+            return 7;
+        default:
+            return 0;
     }
 }
 

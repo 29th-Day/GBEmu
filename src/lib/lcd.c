@@ -2,21 +2,22 @@
 #include "ppu.h"
 #include "dma.h"
 
-static lcd_context ctx;
+static lcd_context ctx = {0};
 
-static unsigned long colors_default[4] = {0xFFFFFFFF, 0xFFAAAAAA, 0xFF555555, 0xFF000000}; 
+// static u8 colors_default[4] = {0xFFFFFFFF, 0xFFAAAAAA, 0xFF555555, 0xFF000000};
+static u8 colors_default[4] = {0xFF, 0xAA, 0x55, 0x00};
 
 void lcd_init() {
     ctx.lcdc = 0x91;
-    ctx.scroll_x = 0;
-    ctx.scroll_y = 0;
-    ctx.ly = 0;
-    ctx.ly_compare = 0;
+    // ctx.scroll_x = 0;
+    // ctx.scroll_y = 0;
+    // ctx.ly = 0;
+    // ctx.ly_compare = 0;
     ctx.bg_palette = 0xFC;
     ctx.obj_palette[0] = 0xFF;
     ctx.obj_palette[1] = 0xFF;
-    ctx.win_y = 0;
-    ctx.win_x = 0;
+    // ctx.win_y = 0;
+    // ctx.win_x = 0;
 
     for (int i=0; i<4; i++) {
         ctx.bg_colors[i] = colors_default[i];
@@ -37,7 +38,7 @@ u8 lcd_read(u16 address) {
 }
 
 void update_palette(u8 palette_data, u8 pal) {
-    u32 *p_colors = ctx.bg_colors;
+    u8 *p_colors = ctx.bg_colors;
 
     switch(pal) {
         case 1:

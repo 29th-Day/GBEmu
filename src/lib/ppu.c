@@ -6,16 +6,16 @@
 void pipeline_fifo_reset();
 void pipeline_process();
 
-static ppu_context ctx;
+static ppu_context ctx = {0};
 
 ppu_context *ppu_get_context() {
     return &ctx;
 }
 
-void ppu_init() {
-    ctx.current_frame = 0;
-    ctx.line_ticks = 0;
-    ctx.video_buffer = malloc(YRES * XRES * sizeof(32));
+void ppu_init(u8* video_buffer) {
+    // ctx.current_frame = 0;
+    // ctx.line_ticks = 0;
+    ctx.video_buffer = video_buffer;
 
     ctx.pfc.line_x = 0;
     ctx.pfc.pushed_x = 0;
@@ -32,7 +32,7 @@ void ppu_init() {
     LCDS_MODE_SET(MODE_OAM);
 
     memset(ctx.oam_ram, 0, sizeof(ctx.oam_ram));
-    memset(ctx.video_buffer, 0, YRES * XRES * sizeof(u32));
+    memset(ctx.video_buffer, 0, sizeof(ctx.video_buffer));
 }
 
 void ppu_tick() {

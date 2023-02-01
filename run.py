@@ -32,17 +32,22 @@ def get_buttons() -> int:
 DLL_PATH = "C:/Users/Gerald/Projects/GBEmu/build/Debug/GBEmu.dll"
 
 ROM_PATH = b"C:/Users/Gerald/Projects/GBEmu/roms/"
-ROM_PATH += b"pokemon.gb"
+ROM_PATH += b"zelda.gb"
 # ROM_PATH += b"drMario.gb"
 
 
 dll = cdll.LoadLibrary(DLL_PATH)
 
-dll.emu_frame.argtypes = [POINTER(c_uint8), c_uint8]
+dll.emu_init.argtypes = [c_char_p, POINTER(c_uint8)]
+dll.emu_init.restype = None
+dll.emu_frame.argtypes = [c_uint8]
+dll.emu_frame.restype = None
 
-dll.emu_init(ROM_PATH)
+SIZE = 144 * 160
 
-buffer = (c_uint8 * 23040)(*([0]*23040))
+buffer = (c_uint8 * SIZE)(*([0]*SIZE))
+
+dll.emu_init(ROM_PATH, buffer)
 
 TICKS = 1_000_000
 # TICKS = 1_000
@@ -53,8 +58,7 @@ start_time = time.time()
 
 for tick in range(TICKS):
 
-
-    dll.emu_frame(buffer, get_buttons())
+    dll.emu_frame(get_buttons())
 
     # print(tick)
 

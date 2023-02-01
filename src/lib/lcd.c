@@ -1,6 +1,6 @@
-#include <lcd.h>
-#include <ppu.h>
-#include <dma.h>
+#include "lcd.h"
+#include "ppu.h"
+#include "dma.h"
 
 static lcd_context ctx;
 

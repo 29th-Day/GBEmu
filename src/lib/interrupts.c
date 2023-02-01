@@ -1,6 +1,6 @@
-#include <cpu.h>
-#include <stack.h>
-#include <interrupts.h>
+#include "cpu.h"
+#include "stack.h"
+#include "interrupts.h"
 
 void int_handle(cpu_context *ctx, u16 address) {
     stack_push16(ctx->regs.pc);

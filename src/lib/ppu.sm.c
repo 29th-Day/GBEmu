@@ -1,7 +1,9 @@
-#include <ppu.h>
-#include <lcd.h>
-#include <cpu.h>
-#include <interrupts.h>
+#include "ppu.h"
+#include "lcd.h"
+#include "cpu.h"
+#include "interrupts.h"
+#include "cart.h"
+
 #include <string.h>
 
 void pipeline_fifo_reset();
@@ -150,6 +152,10 @@ void ppu_mode_hblank() {
             }
 
             ppu_get_context()->current_frame++;
+
+            if (cart_need_save()) {
+                cart_battery_save();
+            }
 
         } else {
             LCDS_MODE_SET(MODE_OAM);

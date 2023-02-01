@@ -1,6 +1,6 @@
-#include <dma.h>
-#include <ppu.h>
-#include <bus.h>
+#include "dma.h"
+#include "ppu.h"
+#include "bus.h"
 
 static dma_context ctx;
 

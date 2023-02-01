@@ -4,6 +4,8 @@ import numpy as np
 import cv2
 import keyboard
 
+import time
+
 def get_buttons() -> int:
     """
     (Start, Select, A, B, Up, Down, Left, Right)
@@ -13,9 +15,9 @@ def get_buttons() -> int:
         out |= 0b10000000
     if keyboard.is_pressed('shift'):
         out |= 0b01000000
-    if keyboard.is_pressed('k'): # a
+    if keyboard.is_pressed('l'): # a
         out |= 0b00100000
-    if keyboard.is_pressed('l'): # b
+    if keyboard.is_pressed('k'): # b
         out |= 0b00010000
     if keyboard.is_pressed('w'):
         out |= 0b00001000
@@ -29,8 +31,9 @@ def get_buttons() -> int:
 
 DLL_PATH = "C:/Users/Gerald/Projects/GBEmu/build/Debug/GBEmu.dll"
 
-# ROM_PATH = b"C:/Users/Gerald/Projects/GBEmu/roms/dmg-acid2.gb"
-ROM_PATH = b"C:/Users/Gerald/Downloads/Dr. Mario (World)/drMario.gb"
+ROM_PATH = b"C:/Users/Gerald/Projects/GBEmu/roms/"
+ROM_PATH += b"pokemon.gb"
+# ROM_PATH += b"drMario.gb"
 
 
 dll = cdll.LoadLibrary(DLL_PATH)
@@ -45,10 +48,15 @@ TICKS = 1_000_000
 # TICKS = 1_000
 # TICKS = 55_500
 
+counter = 0
+start_time = time.time()
+
 for tick in range(TICKS):
+
+
     dll.emu_frame(buffer, get_buttons())
 
-    print(tick)
+    # print(tick)
 
     frame = np.ctypeslib.as_array(buffer).reshape(144, 160)
 
@@ -56,3 +64,10 @@ for tick in range(TICKS):
     if cv2.waitKey(1) == 27:
         cv2.destroyAllWindows()
         break
+
+    if time.time() - start_time >= 1:
+        print(f"FPS: {counter / (time.time() - start_time):.2f}")
+        start_time = time.time()
+        counter = 0
+    else:
+        counter += 1

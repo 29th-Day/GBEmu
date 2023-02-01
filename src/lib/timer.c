@@ -1,5 +1,5 @@
-#include <timer.h>
-#include <interrupts.h>
+#include "timer.h"
+#include "interrupts.h"
 
 static timer_context ctx = {0};
 

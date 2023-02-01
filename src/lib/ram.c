@@ -1,4 +1,4 @@
-#include <ram.h>
+#include "ram.h"
 
 typedef struct {
     u8 wram[0x2000];

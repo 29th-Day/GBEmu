@@ -24,4 +24,4 @@ int emu_run(int argc, char *argv[]);
 void emu_cycles(int cpu_cycles);
 
 DLLEXPORT void emu_init(char *rom_path);
-DLLEXPORT void emu_frame(u8 *frame, bool input);
+DLLEXPORT void emu_frame(u8 *frame, u8 input);

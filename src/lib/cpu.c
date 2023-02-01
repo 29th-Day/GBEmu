@@ -2,7 +2,6 @@
 #include <bus.h>
 #include <emu.h>
 #include <interrupts.h>
-#include <debug.h>
 #include <timer.h>
 
 cpu_context ctx = {0};
@@ -73,9 +72,6 @@ bool cpu_step() {
             printf("Unknown Instruction! %02X\n", ctx.cur_opcode);
             exit(-7);
         }
-
-        dbg_update();
-        dbg_print();
 
         execute();
     } else {

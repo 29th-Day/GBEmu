@@ -1,10 +1,10 @@
 #include "gamepad.h"
 
-#include <string.h>
+// #include <string.h>
 
 typedef struct {
-    bool button_sel;
-    bool dir_sel;
+    bool action;
+    bool direction;
     gamepad_state controller;
 } gamepad_context;
 
@@ -14,27 +14,28 @@ gamepad_state *gamepad_get_state() {
     return &ctx.controller;
 }
 
-void gamepad_init() {
-
+void gamepad_set_state(u8 value) {
+    u8 *state = (u8 *)&ctx.controller;
+    *state = value;
 }
 
-bool gamepad_button_sel() {
-    return ctx.button_sel;
-}
+// bool gamepad_button_sel() {
+//     return ctx.button_sel;
+// }
 
-bool gamepad_dir_sel() {
-    return ctx.dir_sel;
-}
+// bool gamepad_dir_sel() {
+//     return ctx.dir_sel;
+// }
 
-void gamepad_set_sel(u8 value) {
-    ctx.button_sel = value & 0x20;  // bit 5
-    ctx.dir_sel = value & 0x10;     // bit 4
+void gamepad_set_mode(u8 value) {
+    ctx.action = value & 0x20;      // bit 5
+    ctx.direction = value & 0x10;   // bit 4
 }
 
 u8 gamepad_get_output() {
-    u8 output = 0xCF; // lower nibble
+    u8 output = 0xCF; // 1100 1111
 
-    if (!gamepad_button_sel()) {
+    if (!ctx.action) {
         if (gamepad_get_state()->a) {
             output &= ~(1 << 0);
         }
@@ -49,7 +50,7 @@ u8 gamepad_get_output() {
         }
     }
 
-    if (!gamepad_dir_sel()) {
+    if (!ctx.direction) {
         if (gamepad_get_state()->right) {
             output &= ~(1 << 0);
         }

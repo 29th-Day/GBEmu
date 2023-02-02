@@ -192,13 +192,23 @@ const int cart_mapper() {
 }
 
 void cart_setup_banking() {
+    int n_banks = 0;
+    switch (ctx.header->ram_size) {
+        case 2:
+            n_banks = 1;
+            break;
+        case 3:
+            n_banks = 4;
+        case 4:
+            n_banks = 16;
+        case 5:
+            n_banks = 8;
+    }
+
     for (int i = 0; i < 16; i++) {
         ctx.ram_banks[i] = 0;
 
-        if ((ctx.header->ram_size == 2 && i == 0) ||
-            (ctx.header->ram_size == 3 && i < 4) ||
-            (ctx.header->ram_size == 4 && i < 16) ||
-            (ctx.header->ram_size == 5 && i < 8)) {
+        if (i < n_banks) {
             ctx.ram_banks[i] = malloc(0x2000);
             memset(ctx.ram_banks[i], 0, 0x2000);
             // ctx.ram_banks[i] = calloc(0x2000, sizeof(u8));
@@ -217,7 +227,6 @@ bool cart_load(char *cart) {
     fopen_s(&fp, cart, "r");
 
     if (!fp) {
-        printf("Failed to open: %s\n", cart);
         return false;
     }
 
@@ -393,4 +402,14 @@ void cart_battery_save() {
 
     fwrite(ctx.ram_bank, 0x2000, 1, fp);
     fclose(fp);
+}
+
+void cart_free() {
+    free(ctx.rom_data);
+    ctx.rom_data = NULL;
+    
+    for (int i = 0; i < 16; i++) {
+        free(ctx.ram_banks[i]);
+        ctx.ram_banks[i] = NULL;
+    }
 }

@@ -10,10 +10,6 @@
 
 static emu_context ctx;
 
-emu_context *emu_get_context() {
-    return &ctx;
-}
-
 void emu_cycles(int cpu_cycles) {
 
     for (int i = 0; i < cpu_cycles; i++) {
@@ -46,7 +42,6 @@ DLLEXPORT void emu_init(char *rom_path, u8 *video_buffer) {
 }
 
 DLLEXPORT void emu_frame(u8 input) {
-
     gamepad_set_state(input);
 
     u32 prev_frame = ppu_get_context()->current_frame;
@@ -56,8 +51,8 @@ DLLEXPORT void emu_frame(u8 input) {
             printf("CPU Stopped\n");
         }
     }
+}
 
-    // for (int i = 0; i < 23040; i++) {
-    //     frame[i] = (u8)(ppu_get_context()->video_buffer[i] >> 6);
-    // }
+DLLEXPORT void emu_stop() {
+    cart_free();
 }

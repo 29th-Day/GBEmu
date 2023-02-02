@@ -2,7 +2,7 @@
 
 #include <string.h>
 
-#define SUPPORTED_MAPPER(i) ((i == 1))
+#define SUPPORTED_MAPPER(i) ((i == 0) || (i == 1))
 
 typedef struct {
     char filename[1024];
@@ -187,9 +187,8 @@ const int cart_mapper() {
             return 6;
         case 0x22:
             return 7;
-        default:
-            return 0;
     }
+    return 0;
 }
 
 void cart_setup_banking() {

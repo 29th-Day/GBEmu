@@ -19,7 +19,7 @@ typedef enum {
 
 typedef struct _fifo_entry {
     struct _fifo_entry *next;
-    u32 value; // 32 bit color
+    u8 value; // 32 bit color
 } fifo_entry;
 
 typedef struct {
@@ -88,7 +88,7 @@ typedef struct {
 
     u32 current_frame;
     u32 line_ticks;
-    u32 *video_buffer;
+    u8 *video_buffer;
 } ppu_context;
 
 ppu_context *ppu_get_context();

@@ -19,9 +19,7 @@ typedef struct {
 
 emu_context *emu_get_context();
 
-int emu_run(int argc, char *argv[]);
-
 void emu_cycles(int cpu_cycles);
 
-DLLEXPORT void emu_init(char *rom_path);
-DLLEXPORT void emu_frame(u8 *frame, u8 input);
+DLLEXPORT void emu_init(char *rom_path, u8 *video_buffer);
+DLLEXPORT void emu_frame(u8 input);

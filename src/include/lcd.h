@@ -16,10 +16,9 @@ typedef struct {
     u8 win_y;
     u8 win_x;
 
-    //other data...
-    u32 bg_colors[4];
-    u32 sp1_colors[4];
-    u32 sp2_colors[4];
+    u8 bg_colors[4];    // background pallete
+    u8 sp1_colors[4];   // sprite1 palette
+    u8 sp2_colors[4];   // sprite2 pallete
 
 } lcd_context;
 

@@ -199,19 +199,20 @@ void cart_setup_banking() {
             break;
         case 3:
             n_banks = 4;
+            break;
         case 4:
             n_banks = 16;
+            break;
         case 5:
             n_banks = 8;
+            break;
     }
 
     for (int i = 0; i < 16; i++) {
         ctx.ram_banks[i] = 0;
 
         if (i < n_banks) {
-            ctx.ram_banks[i] = malloc(0x2000);
-            memset(ctx.ram_banks[i], 0, 0x2000);
-            // ctx.ram_banks[i] = calloc(0x2000, sizeof(u8));
+            ctx.ram_banks[i] = calloc(0x2000, sizeof(u8));
         }
     }
 
@@ -263,13 +264,14 @@ bool cart_load(char *cart) {
 
     cart_setup_banking();
 
+    // checksum
     u16 x = 0;
     for (u16 i=0x0134; i<=0x014C; i++) {
         x = x - ctx.rom_data[i] - 1;
     }
-
     printf("\t Checksum : %2.2X (%s)\n", ctx.header->checksum, (x & 0xFF) ? "PASSED" : "FAILED");
 
+    // load battery is used
     if (ctx.battery) {
         cart_battery_load();
     }
@@ -278,16 +280,13 @@ bool cart_load(char *cart) {
 }
 
 u8 cart_read(u16 address) {
+    // ROM Bank 00
     if (address < 0x4000) {
         return ctx.rom_data[address];
     }
 
-    // if (!cart_mbc1()) {
-    //     printf("Mapper is not supported!\n");
-    //     return 0xFF;
-    // }
-
-    if ((address & 0xE000) == 0xA000) {
+    // RAM Bank 00-03
+    if (BETWEEN(address, 0xA000, 0xBFFF)) {
         if (!ctx.ram_enabled) {
             return 0xFF;
         }
@@ -299,20 +298,17 @@ u8 cart_read(u16 address) {
         return ctx.ram_bank[address - 0xA000];
     }
 
+    // Switchable ROM Bank 01-7F (0x4000 - 0x7FFF)
     return ctx.rom_bank_x[address - 0x4000];
 }
 
 void cart_write(u16 address, u8 value) {
-    // if (!cart_mbc1()) {
-    //     printf("Mapper is not supported!\n");
-    //     return;
-    // }
-
     if (address < 0x2000) {
         ctx.ram_enabled = ((value & 0xF) == 0xA);
+        return;
     }
 
-    if ((address & 0xE000) == 0x2000) {
+    if (BETWEEN(address, 0x2000, 0x3FFF)) {
         // rom bank
         if (value == 0) {
             value = 1;
@@ -321,9 +317,10 @@ void cart_write(u16 address, u8 value) {
         value &= 0b11111;
         ctx.rom_bank_value = value;
         ctx.rom_bank_x = ctx.rom_data + (0x4000 * ctx.rom_bank_value);
+        return;
     }
 
-    if ((address & 0xE000) == 0x4000) {
+    if (BETWEEN(address, 0x4000, 0x5FFF)) {
         // ram bank
         ctx.ram_bank_value = value & 0b11;
 
@@ -333,9 +330,10 @@ void cart_write(u16 address, u8 value) {
             }
             ctx.ram_bank = ctx.ram_banks[ctx.ram_bank_value];
         }
+        return;
     }
 
-    if ((address & 0xE000) == 0x6000) {
+    if (BETWEEN(address, 0x6000, 0x7FFF)) {
         // banking mode select
         ctx.banking_mode = value & 1;
 
@@ -347,9 +345,10 @@ void cart_write(u16 address, u8 value) {
             }
             ctx.ram_bank = ctx.ram_banks[ctx.ram_bank_value];
         }
+        return;
     }
 
-    if ((address & 0xE000) == 0xA000) {
+    if (BETWEEN(address, 0xA000, 0xBFFF)) {
         if (!ctx.ram_enabled) {
             return;
         }
@@ -363,6 +362,7 @@ void cart_write(u16 address, u8 value) {
         if (ctx.battery) {
             ctx.need_save = true;
         }
+        return;
     }
 }
 

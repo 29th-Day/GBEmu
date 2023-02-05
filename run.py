@@ -47,9 +47,9 @@ def calculate_fps():
 DLL_PATH = "C:/Users/Gerald/Projects/GBEmu/build/Debug/GBEmu.dll"
 
 ROM_PATH = b"C:/Users/Gerald/Projects/GBEmu/roms/"
-# ROM_PATH += b"pokemon.gb"
 # ROM_PATH += b"drMario.gb"
 ROM_PATH += b"zelda.gb"
+# ROM_PATH += b"pokemon.gb"
 
 
 dll = cdll.LoadLibrary(DLL_PATH)
